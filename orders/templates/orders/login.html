@@ -1,0 +1,23 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Pinnochio’s Pizza & Subs Online Orders
+{% endblock %}
+
+{% block body %}
+<h1>Login</h1>
+{% if message %}
+    <div>
+        {{ message }}
+    </div>
+{% endif %}
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <input name="username" type="text"/>
+    <input name="password" type="password"/>
+    <input type="submit" value="Login"/>
+</form>
+<hr>
+<p>If it's your first time here, <a href="{% url 'register' %}">click here to Register</a></p>
+
+{% endblock %}
