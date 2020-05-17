@@ -12,16 +12,29 @@
     </div>
 {% endif %}
 <hr>
+<h3>Welcome to Pinnochio’s Pizza & Subs Online Orders. Please create an account to proceed:</h3>
+<br>
 <form action="{% url 'addUser' %}" method="post">
     {% csrf_token %}
-    <input name="username" type="text" placeholder="Username"/>
-    <input name="firstName" type="text" placeholder="First Name"/>
-    <input name="lastName" type="text" placeholder="Last Name"/>
-    <input name="email" type="text" placeholder="E-mail"/>
-    <input name="phone" type="text" placeholder="Phone Number"/>
-    <input name="address" type="text" placeholder="Address"/>
-    <input name="password" type="password" placeholder="Password"/>
-    <input name="repeatPassword" type="password" placeholder="Repeat password"/>
-    <input type="submit" value="Login"/>
+    <div class="row">
+        <div class="col-lg-3 col-sm-5">
+            <input name="username" type="text" placeholder="Username"/><br>
+            <input name="firstName" type="text" placeholder="First Name"/><br>
+            <input name="lastName" type="text" placeholder="Last Name"/><br>
+            <input name="email" type="text" placeholder="E-mail"/>
+        </div>
+        <div class="col-lg-3 col-sm-5">
+            <input name="phone" type="text" placeholder="Phone Number"/><br>
+            <input name="address" type="text" placeholder="Address"/><br>
+            <input name="password" type="password" placeholder="Password"/><br>
+            <input name="repeatPassword" type="password" placeholder="Repeat password"/>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-6 col-sm-10">
+            <input type="submit" class="card-element-button" value="Register New User"/>
+        </div>
+    </div>
 </form>
 {% endblock %}

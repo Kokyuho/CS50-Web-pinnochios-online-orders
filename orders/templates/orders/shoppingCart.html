@@ -1,0 +1,275 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Pinnochio’s Pizza & Subs Online Orders
+{% endblock %}
+    
+
+{% block script %}
+
+<style>
+    /* @keyframes hide {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    } */
+
+    .animated {
+        animation-play-state: paused;
+    }
+</style>
+
+<script>
+
+    // Delete item from cart function
+    function delItemFromCart(name, size) {
+
+        // Initialize new request
+        const request = new XMLHttpRequest();
+        request.open('POST', '/delItemFromCart');
+
+        // Callback function for when request completes
+        request.onload = () => {
+
+            // Extract JSON data from request and return it
+            const data = JSON.parse(request.responseText);
+            document.getElementById('totalPrice').innerHTML = data.total.toFixed(2);
+            document.getElementById('badge').innerHTML = data.badge
+
+            // Update badge
+            decreaseCartCount()
+            }
+
+        // Add data to send with request
+        const data = new FormData();
+        data.append('name', name);
+        data.append('size', size);
+
+        // Send request
+        request.send(data);
+    }
+
+
+    // Minus item from cart function
+    function minusItemFromCart(name, size) {
+
+        // Initialize new request
+        const request = new XMLHttpRequest();
+        request.open('POST', '/minusItemFromCart');
+
+        // Callback function for when request completes
+        request.onload = () => {
+
+            // Extract JSON data from request and return it
+            const data = JSON.parse(request.responseText);
+            document.getElementById(`quantity_${name}_${size}`).innerHTML = data.quantity;
+            document.getElementById(`price_${name}_${size}`).innerHTML = data.newTotalPriceItem.toFixed(2);
+            document.getElementById('totalPrice').innerHTML = data.total.toFixed(2);
+            
+            // Update badge
+            decreaseCartCount()
+        }
+
+        // Add data to send with request
+        const data = new FormData();
+        data.append('name', name);
+        data.append('size', size);
+
+        // Send request
+        request.send(data);
+    }
+
+
+    // Plus item from cart count function
+    function plusItemFromCart(name, size) {
+
+        // Initialize new request
+        const request = new XMLHttpRequest();
+        request.open('POST', '/plusItemFromCart');
+
+        // Callback function for when request completes
+        request.onload = () => {
+
+            // Extract JSON data from request and return it
+            const data = JSON.parse(request.responseText);
+            document.getElementById(`quantity_${name}_${size}`).innerHTML = data.quantity;
+            document.getElementById(`price_${name}_${size}`).innerHTML = data.newTotalPriceItem.toFixed(2);
+            document.getElementById('totalPrice').innerHTML = data.total.toFixed(2);
+            
+            // Update badge
+            increaseCartCount()
+        }
+
+        // Add data to send with request
+        const data = new FormData();
+        data.append('name', name);
+        data.append('size', size);
+
+        // Send request
+        request.send(data);
+    }
+
+
+    // // Functions running when DOM has loaded
+    // document.addEventListener('DOMContentLoaded', function() {
+
+    //     // Add on-click call back function
+    //     document.addEventListener('click', event => {
+    //         const element = event.target;
+    //         if (element.className.includes('delete')) {
+    //             element.parentElement.style.animationPlayState = 'running';
+    //             element.parentElement.addEventListener('animationend', () =>  {
+    //                 element.parentElement.remove();
+    //             });
+    //         }
+    //     });
+    // });
+    
+</script>
+{% endblock %}
+
+
+{% block body %}
+
+{% if message %}
+    <div>
+        <h2>{{ message }}</h2>
+        <br>
+    </div>
+{% endif %}
+
+<h1 style="margin-bottom: 20px;">{{ user.first_name }}'s shopping cart.</h1>
+
+
+<!-- Shopping Cart -->
+<div id="cart">
+
+    <!-- Cart Headers -->
+    <div id="cartHeaders" class="row" style="margin: 0px 20px;">
+
+        <div class="col-sm-2 my-2">
+            Item
+        </div>
+
+        <div class="col-sm-5 my-2">
+            Quantity
+        </div>
+
+        <div class="col-sm-2 my-2">
+            Price
+        </div>
+
+    </div>
+    <!-- Cart Headers -->
+
+    <hr style="margin-top: 0px;">
+
+    <!-- Cart Contents -->
+    <ul id="cartContents">
+
+        {% for item in items %}
+
+            <li id="{{ item.name|safe }}" class="row my-4 mx-2 p-2 menu-item animated fadeOutLeft">
+
+                <div class="col-sm-2 my-2">
+                    {{ item.name|safe }} - {{ item.size }}
+                </div>
+
+                <div class="col-sm-2 my-2">
+                    <span id="quantity_{{ item.name|safe }}_{{ item.size }}">{{ item.quantity }}</span>
+                </div>
+
+                <button type="button" id="minusButton_{{ item.name|safe }}_{{ item.size }}" class="col-sm-1 my-2 simple-button">-</button>
+                <button type="button" id="plusButton_{{ item.name|safe }}_{{ item.size }}" class="col-sm-1 my-2 simple-button">+</button>
+
+                <!-- Price -->
+                <div class="col-sm-2 my-2 text-right">
+                    <span id="price_{{ item.name|safe }}_{{ item.size }}">{{ item.totalPriceItem|floatformat:2 }}</span>
+                </div>
+                <!-- Price -->
+
+                <div class="col-sm-2 my-2">
+
+                </div>
+
+                <button type="button" id="delButton_{{ item.name|safe }}_{{ item.size }}" class="delete col-sm-1 my-2 simple-button">Delete</button>
+                
+                <div class="w-100 d-sm-none"></div>
+
+                <script>
+                    document.getElementById("minusButton_{{ item.name|safe }}_{{ item.size }}").onclick = () => {
+                        if (document.getElementById('quantity_{{ item.name|safe }}_{{ item.size }}').innerHTML !== '1') {
+                            minusItemFromCart('{{ item.name|safe }}', '{{ item.size }}');
+                        }
+                    }
+                    document.getElementById("plusButton_{{ item.name|safe }}_{{ item.size }}").onclick = () => {
+                        plusItemFromCart('{{ item.name|safe }}', '{{ item.size }}');
+                    }
+                    document.getElementById("delButton_{{ item.name|safe }}_{{ item.size }}").onclick = event => {
+                        const element = event.target;
+                        if (element.className.includes('delete')) {
+                            element.parentElement.style.animationPlayState = 'running';
+                            element.parentElement.addEventListener('animationend', () =>  {
+                                element.parentElement.remove();
+                                delItemFromCart('{{ item.name|safe }}', '{{ item.size }}');
+                            });
+                        }
+                    }
+                </script>
+
+            </li>
+
+        {% endfor %}
+
+        <hr>
+
+        <li id="total" class="row my-4 mx-2 p-2">
+
+            <div class="col-sm-2 my-2" style="font-weight: 600;">
+                TOTAL
+            </div>
+
+            <div class="col-sm-4 my-2">
+
+            </div>
+
+            <!-- Price -->
+            <div class="col-sm-2 my-2 text-right" style="font-weight: 600;">
+                <span id="totalPrice">{{ total|floatformat:2 }}</span>
+            </div>
+            <!-- Price -->
+
+            <div class="col-sm-3 my-2">
+
+            </div>
+            
+            <div class="w-100 d-sm-none"></div>
+
+            <script>
+
+            </script>
+
+        </li>
+        
+    </ul>
+    <!-- Cart Headers -->
+
+    <!-- Place Order Button -->
+    <div>
+        <form action="{% url 'checkout' %}">
+            <input type="submit" value="Checkout" class="card-element-button" style="height: 50px;"/>
+        </form>
+    </div>
+    <!-- Place Order Button -->
+
+</div>
+<!-- Shopping Cart -->
+
+<hr>
+
+<a href="{% url 'logout' %}">Log-out</a>
+
+{% endblock %}

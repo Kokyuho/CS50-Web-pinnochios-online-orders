@@ -1,0 +1,24 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Pinnochio’s Pizza & Subs Online Orders
+{% endblock %}
+    
+
+{% block script %}
+{% endblock %}
+
+
+{% block body %}
+
+<h1>Thank you {{ user.first_name }}, your order has been confirmed.</h1>
+
+<br>
+
+<h2>You will get an email with the order details.</h2>
+
+<hr>
+
+<a href="{% url 'logout' %}">Log-out</a>
+
+{% endblock %}

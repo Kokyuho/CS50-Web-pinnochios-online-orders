@@ -2,14 +2,172 @@
 
 <!DOCTYPE html>
 <html>
+
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+        <link rel="stylesheet" href="{% static 'orders/styles.css' %}"/>
+        
         <title>{% block title %}{% endblock %}</title>
-        <!-- <link rel="stylesheet" href="{% static 'flights/styles.css' %}"/> -->
+        
         {% block script %}
         {% endblock %}
     </head>
+
     <body>
-        {% block body %}
-        {% endblock %}
+
+        <!-- Header -->
+        <div class="sticky mt-5">
+            <!-- Row -->
+            <div class="row p-3">
+
+                <!-- Website Heading -->  
+                <div class="col-md-8">
+                    <h1 style="margin-left: 50px;">Pinnochio’s Pizza & Subs Online Orders</h1>
+                </div>
+                <!-- Website Heading --> 
+    
+                <!-- Nav Bar --> 
+                <div class="col-md-4">
+    
+                    <nav class="navbar navbar-light navbar-expand">
+    
+                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                      </button>
+    
+                      <div class="collapse navbar-collapse justify-content-center" id="navbarsExample08">
+    
+                        <ul class="navbar-nav">
+    
+                          <li class="nav-item active">
+                            <a class="nav-link" href="/">
+                              <span>Home</span>
+                              <span class="sr-only">(current)</span></a>
+                          </li>
+
+                          <li class="nav-item">
+                            <a class="nav-link" href="/orders">
+                              <span>View Orders</span></a>
+                          </li>
+    
+                          <li class="nav-item">
+                            <a class="nav-link notification" href="/shoppingCart">
+                              <span>Shopping Cart</span>
+                              {% if badge == 0 %}
+                                <span id="badge" class="badge"></span>
+                              {% else %}
+                                <span id="badge" class="badge">{{ badge }}</span>
+                              {% endif %}
+                            </a>
+                          </li>
+    
+                        </ul>
+    
+                      </div>
+    
+                    </nav>
+    
+                </div>
+                <!-- Nav Bar --> 
+            </div>
+            <!-- Row -->
+        </div>
+        
+        <!-- Page -->
+        <div class="jumbotron my-2 pinnochio-background">
+          <div style="margin: 0px 50px;">
+            {% block body %}
+            {% endblock %}
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="page-footer pt-4">
+
+            <!-- Footer Links -->
+            <div class="container-fluid text-center text-md-left">
+      
+              <!-- Grid row -->
+              <div class="row justify-content-md-center">
+      
+                <!-- Grid column -->
+                <div class="col-md-3 mb-md-0 mb-3">
+                  <!-- Links -->
+                  <h5 class="text-uppercase">About Us</h5>
+                  <ul class="list-unstyled">
+                    <li>
+                      <a href="#!" class="whiteLink">Terms and Conditions</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="whiteLink">Privacy</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="whiteLink">Team</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="whiteLink">Help</a>
+                    </li>
+                  </ul>
+                </div>
+                <!-- Grid column -->
+      
+                <!-- Grid column -->
+                <div class="col-md-3 mb-md-0 mb-3">
+                  <!-- Links -->
+                  <h5 class="text-uppercase">Collaboration</h5>
+                  <ul class="list-unstyled">
+                    <li>
+                      <a href="#!" class="whiteLink">Post a review</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="whiteLink">Report a bug</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="whiteLink">API</a>
+                    </li>
+                  </ul>
+                </div>
+                <!-- Grid column -->
+      
+                <!-- Grid column -->
+                <div class="col-md-3 mb-md-0 mb-3">
+                  <!-- Links -->
+                  <h5 class="text-uppercase">Connect</h5>
+                  <ul class="list-unstyled">
+                    <li>
+                      <a href="#!" class="whiteLink">Facebook</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="whiteLink">Twitter</a>
+                    </li>
+                    <li>
+                      <a href="#!" class="whiteLink">Instagram</a>
+                    </li>
+                  </ul>
+                </div>
+                <!-- Grid column -->
+      
+              </div>
+              <!-- Grid row -->
+      
+            </div>
+            <!-- Footer Links -->
+      
+            <!-- Copyright -->
+            <div class="footer-copyright text-center py-3">© 2020 Copyright:
+              <a href="#" class="whiteLink">renegades.com</a>
+            </div>
+            <!-- Copyright -->
+      
+        </footer>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+        <script src="{% static 'orders/functions.js' %}"></script>
+
     </body>
+
 </html>

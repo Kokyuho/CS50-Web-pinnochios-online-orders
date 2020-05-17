@@ -1,0 +1,96 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Pinnochio’s Pizza & Subs Online Orders
+{% endblock %}
+    
+
+{% block script %}
+
+<script>
+
+</script>
+{% endblock %}
+
+
+{% block body %}
+
+{% if message %}
+    <div>
+        <h2>{{ message }}</h2>
+        <br>
+    </div>
+{% endif %}
+
+<h1>{{ user.first_name }}'s confirmed orders.</h1>
+
+
+<!-- Confirmed Orders List -->
+<div>
+
+    <br>
+
+    <!-- Confirmed Orders Headers -->
+    <div class="row">
+
+        <div class="col-sm-2 my-2">
+            Order ID
+        </div>
+
+        <div class="col-sm-2 my-2">
+            Status
+        </div>
+
+        <div class="col-sm-6 my-2">
+            Order Details
+        </div>
+
+    </div>
+    <!-- Confirmed Orders Headers -->
+
+    <hr>
+
+    <!-- Confirmed Orders Contents -->
+    <ul>
+
+        {% for cart in carts %}
+
+            <li id="{{ cart.id }}" class="row my-4 mx-2 p-2 menu-item">
+
+                <div class="col-sm-2 my-2">
+                    {{ cart.id }}
+                </div>
+
+                <div class="col-sm-2 my-2">
+                    {{ cart.status }}
+                </div>
+
+                <div class="col-sm-6 my-2">
+                    {{ cart.order_details }}
+                </div>
+                
+                <!-- Price -->
+                <!-- <div class="col-sm-2 my-2 text-right">
+                    <span id="price_{{ item.name|safe }}_{{ item.size }}">{{ item.totalPriceItem|floatformat:2 }}</span>
+                </div> -->
+                <!-- Price -->
+
+            </li>
+
+        {% endfor %}
+
+        <hr>
+
+    </ul>
+    <!-- Confirmed Orders Contents -->
+
+
+</div>
+<!-- Confirmed Orders List -->
+
+<hr>
+
+
+<a href="{% url 'logout' %}">Log-out</a>
+
+{% endblock %}

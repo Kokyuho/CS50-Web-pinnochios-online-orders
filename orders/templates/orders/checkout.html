@@ -1,0 +1,54 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Pinnochio’s Pizza & Subs Online Orders
+{% endblock %}
+    
+
+{% block script %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="/static/orders/client.js" defer></script>
+{% endblock %}
+
+
+{% block body %}
+
+{% if message %}
+    <div>
+        <h2>{{ message }}</h2>
+        <br>
+    </div>
+{% else %}
+    <div>
+        <h2 id="error-message"></h2>
+        <br>
+    </div>
+{% endif %}
+
+<h1>{{ user.first_name }}'s Shopping Cart Checkout</h1>
+
+<!-- Payment form -->
+<form id="payment-form">
+    <div class="jumbotron border my-5">
+        <div class="card-element">
+            <div id="card-element"><!--Stripe.js injects the Card Element--></div>
+            <button id="submit" class="card-element-button">
+                <div class="spinner hidden" id="spinner"></div>
+                <span id="button-text">Pay</span>
+            </button>
+        </div>
+        <!-- <p id="card-errors" role="alert"></p>
+        <p class="result-message hidden">
+            Payment succeeded, see the result in your
+            <a href="" target="_blank">Stripe dashboard.</a> Refresh the page to pay again.
+        </p> -->
+    </div>
+</form>
+<!-- Payment form -->
+
+<hr>
+
+
+<a href="{% url 'logout' %}">Log-out</a>
+
+{% endblock %}

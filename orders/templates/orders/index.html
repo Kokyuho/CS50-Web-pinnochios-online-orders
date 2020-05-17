@@ -7,68 +7,75 @@
 
 {% block script %}
 <script>
-    // Functions running when DOM has loaded
-    document.addEventListener('DOMContentLoaded', function() {
 
-        // Onchange of item select box
-        document.getElementById('item').onchange = function() {
-            document.getElementById('toppings').hidden = true;
-            document.getElementById('subExtras').hidden = true;     
-            var x = document.getElementsByClassName("foodType");
-            for (i = 0; i < x.length; i++) {
-                x[i].hidden = true;
-            } 
-            if (this.value === 'pizza') {
-                document.getElementById('pizzaType').hidden = false;
-                document.getElementById('toppings').hidden = false;
-                document.getElementById('sizes').hidden = false;
-            } 
-            else if (this.value === 'sub') {
-                document.getElementById('subType').hidden = false;
-                document.getElementById('subExtras').hidden = false;
-                document.getElementById('sizes').hidden = false;
-            }
-            else if (this.value === 'pasta') {
-                document.getElementById('pastaType').hidden = false;
-                document.getElementById('sizes').hidden = true;
-            }
-            else if (this.value === 'salad') {
-                document.getElementById('saladType').hidden = false;
-                document.getElementById('sizes').hidden = true;
-            }
-            else if (this.value === 'dinnerPlatter') {
-                document.getElementById('dinnerPlatterType').hidden = false;
-                document.getElementById('sizes').hidden = false;
-            }
-        };
+    // Add to Cart function with alert message
+    function addToCartAlert(name, size, comments) {
 
-        // Onchange of item select box
-        document.getElementById('pizzaType').onchange = function() {
-            var x = document.getElementsByClassName("topping");
-            for (i = 0; i < x.length; i++) {
-                x[i].hidden = true;
+        // Console log! For debugging
+        // console.log('Hello, Friend')
+        // console.log('name: ',name)
+        // console.log('size: ', size)
+
+        // Initialize new request
+        const request = new XMLHttpRequest();
+        request.open('POST', '/addToCart');
+
+        // Callback function for when request completes
+        request.onload = () => {
+
+            // Extract JSON data from request
+            const data = JSON.parse(request.responseText);
+
+            // Alert when the channel was successfully created
+            if (data.success) {
+                alert('Item added to the Cart!');
             }
-            if (this.value === 'Regular, 1 Topping' || this.value === 'Sicilian, 1 Topping') {
-                document.getElementById('topping1').hidden = false;
-            }
-            else if (this.value === 'Regular, 2 Toppings' || this.value === 'Sicilian, 2 Toppings') {
-                document.getElementById('topping1').hidden = false;
-                document.getElementById('topping2').hidden = false;
-            }
-            else if (this.value === 'Regular, 3 Toppings' || this.value === 'Sicilian, 3 Toppings') {
-                document.getElementById('topping1').hidden = false;
-                document.getElementById('topping2').hidden = false;
-                document.getElementById('topping3').hidden = false;
-            }
-            else if (this.value === 'Regular, Special' || this.value === 'Sicilian, Special') {
-                document.getElementById('topping1').hidden = false;
-                document.getElementById('topping2').hidden = false;
-                document.getElementById('topping3').hidden = false;
-                document.getElementById('topping4').hidden = false;
-                document.getElementById('topping5').hidden = false;
-            }
+
+            // Increase cart count on navbar
+            increaseCartCount()
         }
-    });
+
+        // Add data to send with request
+        const data = new FormData();
+        data.append('username', '{{ user.username }}');
+        data.append('name', name);
+        data.append('size', size);
+        data.append('comments', comments)
+
+        // Send request
+        request.send(data);
+        
+    }
+
+
+    // Add to Cart function without alert message
+    function addToCart(name, size, comments) {
+
+        // Console log! For debugging
+        // console.log('Hello, Friend')
+        // console.log('name: ',name)
+        // console.log('size: ', size)
+
+        // Initialize new request
+        const request = new XMLHttpRequest();
+        request.open('POST', '/addToCart');
+
+        // Add data to send with request
+        const data = new FormData();
+        data.append('username', '{{ user.username }}');
+        data.append('name', name);
+        data.append('size', size);
+        data.append('comments', comments)
+
+        // Send request
+        request.send(data);
+    }
+
+
+    // // Functions running when DOM has loaded
+    // document.addEventListener('DOMContentLoaded', function() {
+    // });
+
 </script>
 {% endblock %}
 
@@ -81,147 +88,430 @@
 <form action="{% url 'addToCart' %}" method="post">
     {% csrf_token %}
 
-    <!-- Item Select Box -->
-    <div id="items">
-        <label for="item">Item</label>
-        <select id="item" name="item">
-            <option value="pizza">Pizza</option>
-            <option value="sub">Sub</option>
-            <option value="pasta">Pasta</option>
-            <option value="salad">Salad</option>
-            <option value="dinnerPlatter">Dinner Platter</option>
-        </select>
-    </div>
-    <!-- Item Select Box -->
+    <!-- Main Menu -->
+    <div id="Menu">
+
+        <!-- Pizzas section -->
+        <div id="Pizzas" class="my-5">
+
+            <h2>Pizzas</h2>
+
+            <ul id="pizzaItems">
+
+                {% for x in pizzaTypes %}
+
+                    <li id="{{ x.pizzaType }}" class="row my-4 mx-2 p-2 menu-item">
+
+                        <div class="col-sm-2 my-2">
+                            {{ x.pizzaType|safe }}
+                        </div>
+
+                        <!-- Sizes Select Box -->
+                        <div class="col-sm-2 my-2">
+                            <div class="row">
+                                <label for="size" class="col-12">Size</label>
+                            </div>
+                            <div class="row">
+                                <select id="size_{{ x.pizzaType }}" name="size" class="col-4 col-sm-8">
+                                    <option value="Small">Small</option>
+                                    <option value="Large">Large</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Sizes Select Box -->
+
+                        <!-- Topping Select Boxes -->
+                        <div class="col-sm-6 my-2">
+                            <label for="topping1" class="row">Toppings</label>
+
+                            <div class="row">
+                            
+                                <select id="topping1" name="topping1" class="topping" hidden>
+                                        {% for x in toppings %}
+                                            <option value="{{ x.name }}" >{{ x.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                            
+                                    <select id="topping2" name="topping2" class="topping" hidden>
+                                        {% for x in toppings %}
+                                            <option value="{{ x.name }}" >{{ x.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                            
+                                    <select id="topping3" name="topping3" class="topping" hidden>
+                                        {% for x in toppings %}
+                                            <option value="{{ x.name }}" >{{ x.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                            
+                                    <select id="topping4" name="topping4" class="topping" hidden>
+                                        {% for x in toppings %}
+                                            <option value="{{ x.name }}" >{{ x.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                            
+                                    <select id="topping5" name="topping5" class="topping" hidden>
+                                        {% for x in toppings %}
+                                            <option value="{{ x.name }}" >{{ x.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                        
+                                    <script>
+                                        
+                                    </script>
+                            </div>
+                        </div>
+                        <!-- Topping Select Boxes -->
+                        
+                        <div class="w-100 d-sm-none"></div>
+
+                        <div class="col-12 col-sm-2">
+                            <button type="button" id="button_{{ x.pizzaType }}" class="menu-item-button">Add To Cart</button>
+                        </div>                        
+
+                        <script>
+
+                            // Query for all .topping elements.
+                            var pizzaToppings = document.getElementById("{{ x.pizzaType }}").querySelectorAll(".topping");  
+
+                            // Old stuff but aybe useful to query
+                            // pizzaToppings.forEach( (element) => { element.hidden = false } );
+                            // var toppings = document.getElementsByClassName("topping");
+                            // console.log('{{ x.pizzaType }}');
+                            // Object.entries(toppings).map((object) => { console.log(object[1]) });
+
+                            // For each pizza type, unhide corresponding topping elements
+                            if ('{{x.pizzaType}}' === 'Regular, 1 Topping' || '{{x.pizzaType}}' === 'Sicilian, 1 Topping') {
+                                pizzaToppings.forEach( (element) => { 
+                                    if (element.id === 'topping1') {
+                                        element.hidden = false;
+                                    }
+                                });
+                            }
+                            else if ('{{x.pizzaType}}' === 'Regular, 2 Toppings' || '{{x.pizzaType}}' === 'Sicilian, 2 Toppings') {
+                                pizzaToppings.forEach( (element) => { 
+                                    if (element.id === 'topping1' || element.id === 'topping2') {
+                                        element.hidden = false;
+                                    }
+                                });
+                            }
+                            else if ('{{x.pizzaType}}' === 'Regular, 3 Toppings' || '{{x.pizzaType}}' === 'Sicilian, 3 Toppings') {
+                                pizzaToppings.forEach( (element) => { 
+                                    if (element.id === 'topping1' || element.id === 'topping2' || element.id === 'topping3') {
+                                        element.hidden = false;
+                                    }
+                                });
+                            }
+                            else if ('{{x.pizzaType}}' === 'Regular, Special' || '{{x.pizzaType}}' === 'Sicilian, Special') {
+                                pizzaToppings.forEach( (element) => { 
+                                    element.hidden = false;
+                                });
+                            };
+
+                            // Add click event listener to each button
+                            document.getElementById('button_{{ x.pizzaType }}').addEventListener('click', function(){
+
+                                // Initialize comments variable
+                                var comments = 'Toppings: ';    
+                                
+                                // Query for all .topping elements.
+                                var pizzaToppings = document.getElementById("{{ x.pizzaType }}").querySelectorAll(".topping");  
+
+                                // For each pizza type add the corresponding selected toppings to comments.
+                                pizzaToppings.forEach( (element) => {
+
+                                    if ('{{x.pizzaType}}' === 'Regular, 1 Topping' || '{{x.pizzaType}}' === 'Sicilian, 1 Topping') {
+                                        if (element.id === 'topping1') {
+                                            comments = comments + (element.value) + ' ';
+                                        }                                    }
+                                    else if ('{{x.pizzaType}}' === 'Regular, 2 Toppings' || '{{x.pizzaType}}' === 'Sicilian, 2 Toppings') {
+                                        if (element.id === 'topping1' || element.id === 'topping2') {
+                                            comments = comments + (element.value) + ' ';
+                                        }
+                                    }
+                                    else if ('{{x.pizzaType}}' === 'Regular, 3 Toppings' || '{{x.pizzaType}}' === 'Sicilian, 3 Toppings') {
+                                        if (element.id === 'topping1' || element.id === 'topping2' || element.id === 'topping3') {
+                                            comments = comments + (element.value) + ' ';
+                                        }
+                                    }
+                                    else if ('{{x.pizzaType}}' === 'Regular, Special' || '{{x.pizzaType}}' === 'Sicilian, Special') {
+                                        comments = comments + (element.value) + ' ';
+                                    };
+                                });
+
+                                // Add item to cart, sending name, size and comments.
+                                addToCartAlert(
+                                    'Pizza - {{ x.pizzaType }}',
+                                    document.getElementById("size_{{ x.pizzaType }}").value,
+                                    comments
+                                );
+                            });
+                        </script>
+                    </li>
+
+                {% endfor %}
+                
+            </ul>
+        </div>
+        <!-- Pizzas section -->
 
 
-    <!-- Types Select Boxes -->
-    <div id="types">
-        <hr>
-        <label for="pizzaType">Type</label>
+        <!-- Subs section -->
+        <div id="Subs" class="my-5">
 
-        <select id="pizzaType" name="pizzaType" class="foodType">
-            {% for x in pizzaTypes %}
-                <option value="{{ x.pizzaType }}" >{{ x.pizzaType }}</option>
-            {% endfor %}
-        </select>
+            <h2>Subs</h2>
 
-        <select id="subType" name="subType" class="foodType" hidden>
-            {% for x in subTypes %}
-                <option value="{{ x.subType }}" >{{ x.subType }}</option>
-            {% endfor %}
-        </select>
+            <ul id="subItems">
 
-        <select id="pastaType" name="pastaType" class="foodType" hidden>
-            {% for x in pastaTypes %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
+                {% for x in subTypes %}
 
-        <select id="saladType" name="saladType" class="foodType" hidden>
-            {% for x in saladTypes %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
+                    <li id="{{ x.subType }}" class="row my-4 mx-2 p-2 menu-item">
 
-        <select id="dinnerPlatterType" name="dinnerPlatterType" class="foodType" hidden>
-            {% for x in dinnerPlatterTypes %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <!-- Types Select Boxes -->
+                        <div class="col-sm-2 my-2">
+                            {{ x.subType|safe }}
+                        </div>
+
+                        <!-- Sizes Select Box -->
+                        <div class="col-sm-2 my-2">
+                            <div class="row">
+                                <label for="size" class="col-12">Size</label>
+                            </div>
+                            <div class="row">
+                                <select id="size_{{ x.subType }}" name="size" class="col-4 col-sm-8">
+                                    {% if x.subType != "Sausage, Peppers & Onions" %}
+                                        <option value="Small">Small</option>
+                                    {% endif %}
+                                    <option value="Large">Large</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Sizes Select Box -->
+
+                        <!-- Sub Extras Select Boxes -->
+                        <div class="col-sm-6 my-2">
+
+                            <div class="row">
+                                <label for="subExtra1">Sub Extras</label>
+                            </div>
+                    
+                            <div class="row">
+                                <select id="subExtra1" name="subExtra1" class="subExtra">
+                                    <option value="None" >None</option>
+                                    {% for x in subExtras %}
+                                        <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
+                                    {% endfor %}
+                                </select>
+                        
+                                <select id="subExtra2" name="subExtra2" class="subExtra">
+                                    <option value="None" >None</option>
+                                    {% for x in subExtras %}
+                                        <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
+                                    {% endfor %}
+                                </select>
+                        
+                                <select id="subExtra3" name="subExtra3" class="subExtra">
+                                    <option value="None" >None</option>
+                                    {% for x in subExtras %}
+                                        <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
+                                    {% endfor %}
+                                </select>
+                        
+                                <select id="subExtra4" name="subExtra4" class="subExtra">
+                                    <option value="None" >None</option>
+                                    {% for x in subExtras %}
+                                        <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+
+                        </div>
+                        <!-- Sub Extras Select Boxes -->
+
+                        <div class="col-12 col-sm-2">
+                            <button type="button" id="button_{{ x.subType }}" class="menu-item-button">Add To Cart</button>
+                        </div>
+
+                        <script>
+                            // Add click event listener to each button
+                            document.getElementById('button_{{ x.subType|safe }}').addEventListener('click', function(){
+
+                                // Query for all .subExtra elements.
+                                var subExtras = document.getElementById("{{ x.subType|safe }}").querySelectorAll(".subExtra");  
+                                var comments = 'SubExtras: ';
+                                var alreadyAdded = [];
+
+                                // Add sub extras to cart when selected
+                                subExtras.forEach( (element) => {
+                                    if (element.value !== 'None') {
+                                        if (alreadyAdded.includes(element.value) === false) {
+                                            addToCart(
+                                                'SubExtra - ' + element.value,
+                                                'None',
+                                                ''
+                                            );
+                                            comments = comments + element.value + ' ';
+                                            alreadyAdded.push(element.value);
+                                        }
+                                    }
+                                });
+
+                                // Add sub item to cart with size
+                                addToCartAlert(
+                                    'Sub - {{ x.subType|safe }}',
+                                    document.getElementById("size_{{ x.subType|safe }}").value,
+                                    comments
+                                );
+                            });
+                        </script>
+
+                    </li>
+
+                {% endfor %}
+                
+            </ul>
+        </div>
+        <!-- Subs section -->
 
 
-    <!-- Sizes Select Box -->
-    <div id="sizes">
-        <hr>
-        <label for="size">Size</label>
+        <!-- Pastas section -->
+        <div id="Pastas" class="my-5">
 
-        <select id="size" name="size">
-            <option value="Small">Small</option>
-            <option value="Large">Large</option>
-        </select>
-    </div>
-    <!-- Sizes Select Box -->
+            <h2>Pasta</h2>
 
+            <ul id="pastaItems">
 
-    <!-- Topping Select Boxes -->
-    <div id="toppings">
-        <hr>
-        <label for="topping1">Toppings</label>
+                {% for x in pastaTypes %}
 
-        <select id="topping1" name="topping1" class="topping" hidden>
-            {% for x in toppings %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
+                    <li id="{{ x.name }}" class="row my-4 mx-2 p-2 menu-item">
+                        
+                        <div class="col-sm-10 my-2">
+                            {{ x.name }}
+                        </div>
 
-        <select id="topping2" name="topping2" class="topping" hidden>
-            {% for x in toppings %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
+                        <div class="col-12 col-sm-2">
+                            <button type="button" id="button_{{ x.name }}" class="menu-item-button">Add To Cart</button>
+                        </div>
 
-        <select id="topping3" name="topping3" class="topping" hidden>
-            {% for x in toppings %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
-
-        <select id="topping4" name="topping4" class="topping" hidden>
-            {% for x in toppings %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
-
-        <select id="topping5" name="topping5" class="topping" hidden>
-            {% for x in toppings %}
-                <option value="{{ x.name }}" >{{ x.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <!-- Topping Select Boxes -->
-
-
-    <!-- Sub Extras Select Boxes -->
-    <div id="subExtras" hidden>
-        <hr>
-        <label for="subExtra1">Sub Extras</label>
-
-        <select id="subExtra1" name="subExtra1" class="subExtra">
-            <option value="None" >None</option>
-            {% for x in subExtras %}
-                <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
-            {% endfor %}
-        </select>
-
-        <select id="subExtra2" name="subExtra2" class="subExtra">
-            <option value="None" >None</option>
-            {% for x in subExtras %}
-                <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
-            {% endfor %}
-        </select>
-
-        <select id="subExtra3" name="subExtra3" class="subExtra">
-            <option value="None" >None</option>
-            {% for x in subExtras %}
-                <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
-            {% endfor %}
-        </select>
-
-        <select id="subExtra4" name="subExtra4" class="subExtra">
-            <option value="None" >None</option>
-            {% for x in subExtras %}
-                <option value="{{ x.extraType }}" >{{ x.extraType }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <!-- Sub Extras Select Boxes -->
+                        <script>
+                            // Add click event listener to each button
+                            document.getElementById('button_{{ x.name|safe }}').addEventListener('click', function(){
     
-    <hr>
-    <input type="submit" value="Add To Cart"/>
-    <br>
+                                // Add sub item to cart with size
+                                addToCartAlert(
+                                    'Pasta - {{ x.name|safe }}',
+                                    '',
+                                    ''
+                                );
+                            });
+                        </script>
+                    </li>
+
+                {% endfor %}
+                
+            </ul>
+        </div>
+        <!-- Subs section -->
+
+
+        <!-- Salads section -->
+        <div id="Salads" class="my-5"> 
+
+            <h2>Salad</h2>
+
+            <ul id="saladItems">
+
+                {% for x in saladTypes %}
+
+                    <li id="{{ x.name }}" class="row my-4 mx-2 p-2 menu-item">
+                        
+                        <div class="col-sm-10 my-2">
+                            {{ x.name }}
+                        </div>
+
+                        <div class="col-12 col-sm-2">
+                            <button type="button" id="button_{{ x.name }}" class="menu-item-button">Add To Cart</button>
+                        </div>
+
+                        <script>
+                            // Add click event listener to each button
+                            document.getElementById('button_{{ x.name|safe }}').addEventListener('click', function(){
+    
+                                // Add sub item to cart with size
+                                addToCartAlert(
+                                    'Salad - {{ x.name|safe }}',
+                                    '',
+                                    ''
+                                );
+                            });
+                        </script>
+                    </li>
+
+                {% endfor %}
+                
+            </ul>
+        </div>
+        <!-- Salads section -->
+
+
+        <!-- Dinner Platters section -->
+        <div id="DinnerPlatters" class="my-5">
+
+            <h2>Dinner Platters</h2>
+
+            <ul id="dinnerPlatterItems">
+
+                {% for x in dinnerPlatterTypes %}
+
+                    <li id="{{ x.name }}" class="row my-4 mx-2 p-2 menu-item">
+                        
+                        <div class="col-sm-2 my-2">
+                            {{ x.name }}
+                        </div>
+
+                        <!-- Sizes Select Box -->
+                        <div class="col-sm-2 my-2">
+                            <div class="row">
+                                <label for="size" class="col-12">Size</label>
+                            </div>
+                            <div class="row">
+                                <select id="size_{{ x.name }}" name="size" class="col-4 col-sm-8">
+                                    <option value="Small">Small</option>
+                                    <option value="Large">Large</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Sizes Select Box -->
+
+                        <div class="col-sm-6 my-2"></div>
+
+                        <div class="col-12 col-sm-2">
+                            <button type="button" id="buttonDP_{{ x.name }}" class="menu-item-button">Add To Cart</button>
+                        </div>
+
+                        <script>
+                            // Add click event listener to each button
+                            document.getElementById('buttonDP_{{ x.name|safe }}').addEventListener('click', function(){
+
+                                // Add sub item to cart with size
+                                addToCartAlert(
+                                    'Dinner Platter - {{ x.name|safe }}',
+                                    document.getElementById("size_{{ x.name|safe }}").value,
+                                    ''
+                                );
+                            });
+                        </script>
+                        
+                    </li>
+
+                {% endfor %}
+                
+            </ul>
+        </div>
+        <!-- Dinner Platters section -->
+
+    </div>
+    <!-- Types Select Boxes -->
 
 </form>
 

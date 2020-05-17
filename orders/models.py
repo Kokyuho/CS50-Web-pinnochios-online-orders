@@ -12,13 +12,56 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
       if created:
-            print('create_user_profile')
             Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-      print('save_user_profile')
       instance.profile.save()
+
+
+# Product model
+class Product(models.Model):
+    name = models.CharField(max_length=64)
+    size = models.CharField(max_length=64)
+    price = models.FloatField()
+
+    def __str__(self) -> str:
+        return f"{self.name}, {self.size} - {self.price}"
+
+
+# User shopping cart model (old)
+class ShoppingCart(models.Model):
+      user = models.OneToOneField(User, on_delete=models.CASCADE)
+      items = models.ManyToManyField(Product)
+
+
+# User shopping cart model
+class ShoppingCart2(models.Model):
+      user = models.ForeignKey(User, on_delete=models.CASCADE)
+      items = models.ManyToManyField(Product, through="Quantity2")
+      status = models.CharField(max_length=64, default='Active')
+
+      def order_details(self):
+        return "\n".join([(str(self.quantity2_set.get(product=p).quantity) + "x " +
+                        p.name + " - " + p.size + " - Comments:" +
+                        str(self.quantity2_set.get(product=p).comments)) for p in self.items.all()])
+
+
+class Quantity2(models.Model):
+      product = models.ForeignKey(Product, on_delete=models.CASCADE)
+      shoppingCart = models.ForeignKey(ShoppingCart2, on_delete=models.CASCADE)
+      quantity = models.IntegerField()
+      comments = models.CharField(max_length=100, default='')
+
+
+# # Order model
+# class Order(models.Model):
+#       user = models.ForeignKey(User, on_delete=models.CASCADE)
+#       items = models.ManyToManyField(Item)
+#       totalPrice = models.FloatField()
+
+#       def __str__(self) -> str:
+#             return f"{self.name}, {self.size} - {self.price}"
 
 
 # Size Model
