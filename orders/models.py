@@ -22,7 +22,7 @@ def save_user_profile(sender, instance, **kwargs):
 # Product model
 class Product(models.Model):
     name = models.CharField(max_length=64)
-    size = models.CharField(max_length=64)
+    size = models.CharField(max_length=64, blank=True)
     price = models.FloatField()
 
     def __str__(self) -> str:

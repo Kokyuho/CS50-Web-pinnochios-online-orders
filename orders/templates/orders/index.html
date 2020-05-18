@@ -72,9 +72,17 @@
     }
 
 
-    // // Functions running when DOM has loaded
-    // document.addEventListener('DOMContentLoaded', function() {
-    // });
+    // This will load a global products javascript dict to find prices later
+    const products = [
+    {% for product in products %}
+        {% if not forloop.first %},{% endif %}
+        {
+            name: "{{ product.name }}",
+            size: "{{ product.size }}",
+            price: "{{ product.price }}",
+        }
+    {% endfor %}
+    ]
 
 </script>
 {% endblock %}
@@ -103,7 +111,12 @@
                     <li id="{{ x.pizzaType }}" class="row my-4 mx-2 p-2 menu-item">
 
                         <div class="col-sm-2 my-2">
-                            {{ x.pizzaType|safe }}
+                            <div class="row">
+                                {{ x.pizzaType|safe }}
+                            </div>
+                            <div class="row">
+                                <p><span id="price_{{ x.pizzaType }}"></span> $</p>
+                            </div>
                         </div>
 
                         <!-- Sizes Select Box -->
@@ -170,6 +183,28 @@
                         </div>                        
 
                         <script>
+
+                            // Get price of product and display it, based on size selection box
+                            var objects = products.filter(obj => {
+                                return obj.name === 'Pizza - {{ x.pizzaType|safe }}'
+                            })
+                            var rightObject = objects.find(obj => {
+                                return obj.size === document.getElementById("size_{{ x.pizzaType }}").value
+                            })
+                            var price = rightObject.price
+                            document.getElementById("price_{{ x.pizzaType }}").innerHTML = parseFloat(price).toFixed(2)
+
+                            // On change function of size box to update price accordingly
+                            document.getElementById("size_{{ x.pizzaType }}").onchange = function() {
+                                var objects = products.filter(obj => {
+                                    return obj.name === 'Pizza - {{ x.pizzaType|safe }}'
+                                })
+                                var rightObject = objects.find(obj => {
+                                    return obj.size === document.getElementById("size_{{ x.pizzaType }}").value
+                                })
+                                var price = rightObject.price
+                                document.getElementById("price_{{ x.pizzaType }}").innerHTML = parseFloat(price).toFixed(2)
+                            }
 
                             // Query for all .topping elements.
                             var pizzaToppings = document.getElementById("{{ x.pizzaType }}").querySelectorAll(".topping");  
@@ -268,7 +303,12 @@
                     <li id="{{ x.subType }}" class="row my-4 mx-2 p-2 menu-item">
 
                         <div class="col-sm-2 my-2">
-                            {{ x.subType|safe }}
+                            <div class="row">
+                                {{ x.subType|safe }}
+                            </div>
+                            <div class="row">
+                                <p><span id="price_{{ x.subType }}"></span> $</p>
+                            </div>
                         </div>
 
                         <!-- Sizes Select Box -->
@@ -291,7 +331,7 @@
                         <div class="col-sm-6 my-2">
 
                             <div class="row">
-                                <label for="subExtra1">Sub Extras</label>
+                                <label for="subExtra1">Sub Extras (+ 0.50 $ each)</label>
                             </div>
                     
                             <div class="row">
@@ -333,6 +373,29 @@
                         </div>
 
                         <script>
+
+                            // Get price of product and display it, based on size selection box
+                            var objects = products.filter(obj => {
+                                return obj.name === 'Sub - {{ x.subType }}'
+                            })
+                            var rightObject = objects.find(obj => {
+                                return obj.size === document.getElementById("size_{{ x.subType|safe }}").value
+                            })
+                            var price = rightObject.price
+                            document.getElementById("price_{{ x.subType|safe }}").innerHTML = parseFloat(price).toFixed(2)
+
+                            // On change function of size box to update price accordingly
+                            document.getElementById("size_{{ x.subType|safe }}").onchange = function() {
+                                var objects = products.filter(obj => {
+                                    return obj.name === 'Sub - {{ x.subType|safe }}'
+                                })
+                                var rightObject = objects.find(obj => {
+                                    return obj.size === document.getElementById("size_{{ x.subType|safe }}").value
+                                })
+                                var price = rightObject.price
+                                document.getElementById("price_{{ x.subType|safe }}").innerHTML = parseFloat(price).toFixed(2)
+                            }
+
                             // Add click event listener to each button
                             document.getElementById('button_{{ x.subType|safe }}').addEventListener('click', function(){
 
@@ -386,7 +449,12 @@
                     <li id="{{ x.name }}" class="row my-4 mx-2 p-2 menu-item">
                         
                         <div class="col-sm-10 my-2">
-                            {{ x.name }}
+                            <div class="row">
+                                {{ x.name }}
+                            </div>
+                            <div class="row">
+                                <p><span id="price_{{ x.name }}"></span> $</p>
+                            </div>
                         </div>
 
                         <div class="col-12 col-sm-2">
@@ -394,6 +462,15 @@
                         </div>
 
                         <script>
+
+                            // Get price of product and display it, based on size selection box
+                            var objects = products.filter(obj => {
+                                return obj.name === 'Pasta - {{ x.name }}'
+                            })
+                            var rightObject = objects[0]
+                            var price = rightObject.price
+                            document.getElementById("price_{{ x.name|safe }}").innerHTML = parseFloat(price).toFixed(2)
+
                             // Add click event listener to each button
                             document.getElementById('button_{{ x.name|safe }}').addEventListener('click', function(){
     
@@ -411,7 +488,7 @@
                 
             </ul>
         </div>
-        <!-- Subs section -->
+        <!-- Pasta section -->
 
 
         <!-- Salads section -->
@@ -426,7 +503,12 @@
                     <li id="{{ x.name }}" class="row my-4 mx-2 p-2 menu-item">
                         
                         <div class="col-sm-10 my-2">
-                            {{ x.name }}
+                            <div class="row">
+                                {{ x.name }}
+                            </div>
+                            <div class="row">
+                                <p><span id="price_{{ x.name }}"></span> $</p>
+                            </div>
                         </div>
 
                         <div class="col-12 col-sm-2">
@@ -434,6 +516,14 @@
                         </div>
 
                         <script>
+                            // Get price of product and display it, based on size selection box
+                            var objects = products.filter(obj => {
+                                return obj.name === 'Salad - {{ x.name }}'
+                            })
+                            var rightObject = objects[0]
+                            var price = rightObject.price
+                            document.getElementById("price_{{ x.name|safe }}").innerHTML = parseFloat(price).toFixed(2)
+
                             // Add click event listener to each button
                             document.getElementById('button_{{ x.name|safe }}').addEventListener('click', function(){
     
@@ -466,7 +556,12 @@
                     <li id="{{ x.name }}" class="row my-4 mx-2 p-2 menu-item">
                         
                         <div class="col-sm-2 my-2">
-                            {{ x.name }}
+                            <div class="row">
+                                {{ x.name }}
+                            </div>
+                            <div class="row">
+                                <p><span id="priceDP_{{ x.name }}"></span> $</p>
+                            </div>
                         </div>
 
                         <!-- Sizes Select Box -->
@@ -490,6 +585,28 @@
                         </div>
 
                         <script>
+                            // Get price of product and display it, based on size selection box
+                            var objects = products.filter(obj => {
+                                return obj.name === 'Dinner Platter - {{ x.name }}'
+                            })
+                            var rightObject = objects.find(obj => {
+                                return obj.size === document.getElementById("size_{{ x.name|safe }}").value
+                            })
+                            var price = rightObject.price
+                            document.getElementById("priceDP_{{ x.name|safe }}").innerHTML = parseFloat(price).toFixed(2)
+
+                            // On change function of size box to update price accordingly
+                            document.getElementById("size_{{ x.name|safe }}").onchange = function() {
+                                var objects = products.filter(obj => {
+                                    return obj.name === 'Dinner Platter - {{ x.name|safe }}'
+                                })
+                                var rightObject = objects.find(obj => {
+                                    return obj.size === document.getElementById("size_{{ x.name|safe }}").value
+                                })
+                                var price = rightObject.price
+                                document.getElementById("priceDP_{{ x.name|safe }}").innerHTML = parseFloat(price).toFixed(2)
+                            }
+
                             // Add click event listener to each button
                             document.getElementById('buttonDP_{{ x.name|safe }}').addEventListener('click', function(){
 

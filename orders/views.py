@@ -375,6 +375,7 @@ def index(request):
         "dinnerPlatterTypes": DinnerPlatterType.objects.all(),
         "toppings": Topping.objects.all(),
         "subExtras": SubExtra.objects.all(),
+        "products": Product.objects.all(),
         "badge": count
     }
     return render(request, "orders/index.html", context)
