@@ -43,18 +43,18 @@
                         <ul class="navbar-nav">
     
                           <li class="nav-item active">
-                            <a class="nav-link" href="/">
+                            <a class="nav-link" href="{% url 'index' %}">
                               <span>Home</span>
                               <span class="sr-only">(current)</span></a>
                           </li>
 
                           <li class="nav-item">
-                            <a class="nav-link" href="/orders">
+                            <a class="nav-link" href="{% url 'orders' %}">
                               <span>View Orders</span></a>
                           </li>
     
                           <li class="nav-item">
-                            <a class="nav-link notification" href="/shoppingCart">
+                            <a class="nav-link notification" href="{% url 'shoppingCart' %}">
                               <span>Shopping Cart</span>
                               {% if badge == 0 %}
                                 <span id="badge" class="badge"></span>
