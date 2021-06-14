@@ -2,9 +2,9 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/thenusex/pinnochios-online-orders/
+    - export DEPLOYPATHSTATIC=/home/thenusex/public_html/pinnochios-online-orders/
     - /bin/cp -R orders $DEPLOYPATH
-    - /bin/cp -R pizza $DEPLOYPATH
-    - /bin/cp -R static $DEPLOYPATH
+    - /bin/cp -R static $DEPLOYPATHSTATIC
     - /bin/cp manage.py $DEPLOYPATH
     - /bin/cp requirements.txt $DEPLOYPATH
     - /bin/cp db.sqlite3 $DEPLOYPATH
