@@ -537,7 +537,7 @@ def orders(request):
     user_id = request.user
 
     # Get all user's non active shopping carts
-    carts = ShoppingCart2.objects.exclude(status = "Active")
+    carts = ShoppingCart2.objects.filter(user=user_id).exclude(status = "Active")
 
     # Count all items in active cart for badge
     cart = getUserCart(user_id)
