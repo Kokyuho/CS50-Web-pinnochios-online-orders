@@ -5,7 +5,7 @@ function increaseCartCount() {
 
     // Initialize new request
     const request = new XMLHttpRequest();
-    request.open('POST', '/increaseCartCount');
+    request.open('POST', '{% url "increaseCartCount" %}');
 
     // Callback function for when request completes
     request.onload = () => {
@@ -29,7 +29,7 @@ function decreaseCartCount() {
 
     // Initialize new request
     const request = new XMLHttpRequest();
-    request.open('POST', '/decreaseCartCount');
+    request.open('POST', '{% url "decreaseCartCount" %}');
 
     // Callback function for when request completes
     request.onload = () => {
