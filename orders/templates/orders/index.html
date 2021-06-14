@@ -18,7 +18,7 @@
 
         // Initialize new request
         const request = new XMLHttpRequest();
-        request.open('POST', '/addToCart');
+        request.open('POST', '{% url 'addToCart' %}');
 
         // Callback function for when request completes
         request.onload = () => {
@@ -58,7 +58,7 @@
 
         // Initialize new request
         const request = new XMLHttpRequest();
-        request.open('POST', '/addToCart');
+        request.open('POST', '{% url 'addToCart' %}');
 
         // Add data to send with request
         const data = new FormData();

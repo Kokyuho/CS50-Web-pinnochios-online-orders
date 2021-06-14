@@ -29,7 +29,7 @@
 
         // Initialize new request
         const request = new XMLHttpRequest();
-        request.open('POST', '/delItemFromCart');
+        request.open('POST', '{% url 'delItemFromCart' %}');
 
         // Callback function for when request completes
         request.onload = () => {
@@ -58,7 +58,7 @@
 
         // Initialize new request
         const request = new XMLHttpRequest();
-        request.open('POST', '/minusItemFromCart');
+        request.open('POST', '{% url 'minusItemFromCart' %}');
 
         // Callback function for when request completes
         request.onload = () => {
@@ -88,7 +88,7 @@
 
         // Initialize new request
         const request = new XMLHttpRequest();
-        request.open('POST', '/plusItemFromCart');
+        request.open('POST', '{% url 'plusItemFromCart' %}');
 
         // Callback function for when request completes
         request.onload = () => {
@@ -260,7 +260,7 @@
     <!-- Place Order Button -->
     <div>
         <form action="{% url 'checkout' %}">
-            <input type="submit" value="Checkout" class="card-element-button" style="height: 50px;"/>
+            <input type="submit" value="Checkout" class="card-element-button" style="height: 50px;">
         </form>
     </div>
     <!-- Place Order Button -->
