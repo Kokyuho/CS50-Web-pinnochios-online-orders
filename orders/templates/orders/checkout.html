@@ -7,6 +7,10 @@
 
 {% block script %}
 <script src="https://js.stripe.com/v3/"></script>
+<script>
+    var createPaymentIntent_url = "{% url 'createPaymentIntent' %}";
+    var orderPlaced_url = "{% url 'orderPlaced' %}";
+  </script>
 <script src="{% static 'orders/client.js' %}" defer></script>
 {% endblock %}
 

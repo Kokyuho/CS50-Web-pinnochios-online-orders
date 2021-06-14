@@ -5,7 +5,7 @@ var stripe = Stripe("pk_test_CrklCo9XrobhOg3shK0Du21T00qA3xLdZq");
 document.querySelector("button").disabled = true;
 
 // Fetch a payment intent as soon as the page loads
-fetch("{% url 'createPaymentIntent' %}", {
+fetch(createPaymentIntent_url, {
     method: "POST",
     headers: {
     "Content-Type": "application/json"
@@ -67,7 +67,7 @@ var payWithCard = function(stripe, card, clientSecret) {
                 // console.log(result.error.message);
             } else {
                 // The payment succeeded!
-                window.location.replace("{% url 'orderPlaced' %}");
+                window.location.replace(orderPlaced_url);
                 // orderComplete(result.paymentIntent.id);
             }
         });
